@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="c47364ce-d1b1-4776-9086-bf7cbf5109ae" name="Default Changelist" comment="">
+      <change beforePath="$USER_HOME$/deepvesselnet/dvn/fcn.py" beforeDir="false" afterPath="$USER_HOME$/deepvesselnet/dvn/fcn.py" afterDir="false" />
+      <change beforePath="$USER_HOME$/deepvesselnet/dvn/losses.py" beforeDir="false" afterPath="$USER_HOME$/deepvesselnet/dvn/losses.py" afterDir="false" />
+      <change beforePath="$USER_HOME$/deepvesselnet/dvn/net.py" beforeDir="false" afterPath="$USER_HOME$/deepvesselnet/dvn/net.py" afterDir="false" />
+      <change beforePath="$USER_HOME$/deepvesselnet/dvn/unet.py" beforeDir="false" afterPath="$USER_HOME$/deepvesselnet/dvn/unet.py" afterDir="false" />
+      <change beforePath="$USER_HOME$/deepvesselnet/dvn/vnet.py" beforeDir="false" afterPath="$USER_HOME$/deepvesselnet/dvn/vnet.py" afterDir="false" />
+    </list>
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Jupyter Notebook" />
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$USER_HOME$/deepvesselnet" />
+  </component>
+  <component name="ProjectId" id="1Q6V7Y663BfKLRNQwMB1uvT0LMl" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="PropertiesComponent">
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
+    <property name="nodejs_npm_path_reset_for_default_project" value="true" />
+    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/dvn" />
+    </key>
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="c47364ce-d1b1-4776-9086-bf7cbf5109ae" name="Default Changelist" comment="" />
+      <created>1567090865569</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1567090865569</updated>
+      <workItem from="1567090869284" duration="2421000" />
+      <workItem from="1567151443809" duration="9090000" />
+      <workItem from="1567424012975" duration="20000" />
+      <workItem from="1567424146080" duration="737000" />
+      <workItem from="1567498318737" duration="2981000" />
+      <workItem from="1567677316054" duration="2160000" />
+      <workItem from="1567843418454" duration="1665000" />
+      <workItem from="1567946268430" duration="1329000" />
+      <workItem from="1568102330527" duration="11865000" />
+      <workItem from="1568204240607" duration="616000" />
+      <workItem from="1568543258610" duration="2728000" />
+      <workItem from="1568621625114" duration="2722000" />
+      <workItem from="1568639911770" duration="1337000" />
+      <workItem from="1568885376974" duration="1712000" />
+      <workItem from="1568888020535" duration="130000" />
+      <workItem from="1568888432154" duration="8263000" />
+      <workItem from="1569401642193" duration="2467000" />
+      <workItem from="1569404255903" duration="1556000" />
+      <workItem from="1569405856677" duration="114000" />
+      <workItem from="1569406122654" duration="247000" />
+      <workItem from="1569406664849" duration="57000" />
+      <workItem from="1569415165749" duration="4247000" />
+      <workItem from="1569685211408" duration="3315000" />
+      <workItem from="1571237129678" duration="1920000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>
