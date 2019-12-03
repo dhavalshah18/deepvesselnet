@@ -2,11 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="c47364ce-d1b1-4776-9086-bf7cbf5109ae" name="Default Changelist" comment="">
-      <change beforePath="$USER_HOME$/deepvesselnet/dvn/fcn.py" beforeDir="false" afterPath="$USER_HOME$/deepvesselnet/dvn/fcn.py" afterDir="false" />
-      <change beforePath="$USER_HOME$/deepvesselnet/dvn/losses.py" beforeDir="false" afterPath="$USER_HOME$/deepvesselnet/dvn/losses.py" afterDir="false" />
-      <change beforePath="$USER_HOME$/deepvesselnet/dvn/net.py" beforeDir="false" afterPath="$USER_HOME$/deepvesselnet/dvn/net.py" afterDir="false" />
-      <change beforePath="$USER_HOME$/deepvesselnet/dvn/unet.py" beforeDir="false" afterPath="$USER_HOME$/deepvesselnet/dvn/unet.py" afterDir="false" />
-      <change beforePath="$USER_HOME$/deepvesselnet/dvn/vnet.py" beforeDir="false" afterPath="$USER_HOME$/deepvesselnet/dvn/vnet.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DeepVesselNet.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/DeepVesselNet.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dvn/dvn_fcn.py" beforeDir="false" afterPath="$PROJECT_DIR$/dvn/dvn_fcn.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dvn/losses.py" beforeDir="false" afterPath="$PROJECT_DIR$/dvn/losses.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -23,16 +22,16 @@
     </option>
   </component>
   <component name="Git.Settings">
-    <option name="RECENT_GIT_ROOT_PATH" value="$USER_HOME$/deepvesselnet" />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="ProjectId" id="1Q6V7Y663BfKLRNQwMB1uvT0LMl" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$USER_HOME$/deepvesselnet" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
-    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
@@ -85,6 +84,16 @@
       <workItem from="1569415165749" duration="4247000" />
       <workItem from="1569685211408" duration="3315000" />
       <workItem from="1571237129678" duration="1920000" />
+      <workItem from="1572788768177" duration="34000" />
+      <workItem from="1573057528040" duration="1313000" />
+      <workItem from="1573060069128" duration="82000" />
+      <workItem from="1573289598999" duration="861000" />
+      <workItem from="1573290608618" duration="609000" />
+      <workItem from="1573573199486" duration="19000" />
+      <workItem from="1573573468807" duration="719000" />
+      <workItem from="1573810565551" duration="389000" />
+      <workItem from="1573908336896" duration="8630000" />
+      <workItem from="1573919685305" duration="399000" />
     </task>
     <servers />
   </component>

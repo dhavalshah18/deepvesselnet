@@ -6,13 +6,16 @@ import torch.nn as nn
 import torch.optim as optim
 import numpy as np
 
+
 def _categorical_crossentropy(target, output, axis=-1):
     pass
+
 
 def categorical_crossentropy():
     def loss(input, target):
         return nn.CrossEntropyLoss(input, target)
     return loss
+
 
 def weighted_categorical_crossentropy(classes=2):
     def loss(input, target):
@@ -27,6 +30,7 @@ def weighted_categorical_crossentropy(classes=2):
         return C
 
     return loss
+
 
 def weighted_categorical_crossentropy_fpr(classes=2, threshold=0.5):
     def loss(input, target):

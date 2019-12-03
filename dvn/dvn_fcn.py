@@ -3,6 +3,7 @@
 import torch
 import torch.nn as nn
 
+
 class DeepVesselNetFCN(nn.Module):
     """INPUT - 3DCONV - 3DCONV - 3DCONV - 3DCONV - FCN """
     def __init__(self, nchannels=1, nlabels=2, cross_hair=False, dim=3):
