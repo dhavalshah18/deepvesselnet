@@ -7,23 +7,22 @@ import torch.optim as optim
 import numpy as np
 
 
-def _categorical_crossentropy(target, output, axis=-1):
-    pass
-
-
 def categorical_crossentropy():
-    def loss(input, target):
-        return nn.CrossEntropyLoss(input, target)
+    def loss(inputs, targets):
+        L = nn.CrossEntropyLoss()
+        return L(inputs, targets)
     return loss
 
 
 def weighted_categorical_crossentropy(classes=2):
-    def loss(input, target):
-        L = nn.CrossEntropyLoss(input, target, reduction='none')
-        _, y_true_p = torch.max(target)
+    def loss(inputs, targets):
+        L1 = nn.CrossEntropyLoss(reduction='none')
+        L = L1(inputs, targets)
+        print(targets.shape)
+        _, y_true_p = torch.max(targets)
         for c in range(classes):
             # element-wise equality
-            c_true = torch.eq(y_true_p, c).type(input)
+            c_true = torch.eq(y_true_p, c).type(inputs)
             w = 1. / (torch.sum(c_true))
             C = torch.sum(L * c_true * w) if c==0 else C+torch.sum(L * c_true *w)
 
@@ -33,14 +32,15 @@ def weighted_categorical_crossentropy(classes=2):
 
 
 def weighted_categorical_crossentropy_fpr(classes=2, threshold=0.5):
-    def loss(input, target):
-        L = nn.CrossEntropyLoss(input, target, reduction='none')
-        _, y_true_p = torch.max(target)
-        y_pred_probs, y_pred_bin = torch.max(input)
+    def loss(inputs, targets):
+        L1 = nn.CrossEntropyLoss(reduction='none')
+        L = L1(inputs, targets)
+        _, y_true_p = torch.max(targets)
+        y_pred_probs, y_pred_bin = torch.max(inputs)
 
         for c in range(classes):
             # element-wise equality
-            c_true = torch.eq(y_true_p, c).type(input)
+            c_true = torch.eq(y_true_p, c).type(inputs)
             w = 1. / (torch.sum(c_true))
             C = torch.sum(L * c_true * w) if c == 0 else C + torch.sum(L * c_true * w)
 

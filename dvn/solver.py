@@ -6,15 +6,16 @@ import numpy as np
 import torch
 import torch.nn
 import torch.optim
+from torch.autograd import Variable
 from dvn import losses as ls
 
 
 class Solver(object):
     default_sgd_args = {"lr": 0.01,
-                        "weight_decay": 0.99}
+                        "weight_decay": 0.01}
 
     def __init__(self, optim=torch.optim.SGD, optim_args={},
-                 loss_func=ls.weighted_categorical_crossentropy()):
+                 loss_func=torch.nn.CrossEntropyLoss()):
         optim_args_merged = self.default_sgd_args.copy()
         optim_args_merged.update(optim_args)
         self.optim_args = optim_args_merged
@@ -46,7 +47,7 @@ class Solver(object):
         optim = self.optim(model.parameters(), **self.optim_args)
         self._reset_histories()
         iter_per_epoch = len(train_loader)
-        device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+        # device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
         device = torch.device("cpu")
         model.to(device)
 
@@ -55,11 +56,11 @@ class Solver(object):
         for epoch in range(num_epochs):
             # Training
             for i, (inputs, targets) in enumerate(train_loader, 1):
-                inputs, targets = inputs.to(device), targets.to(device)
+                inputs, targets = inputs.to(device, dtype=torch.float), targets.to(device, dtype=torch.long)
                 optim.zero_grad()
 
                 outputs = model(inputs)
-                loss = self.loss_func(outputs, targets)
+                loss = self.loss_func(outputs, targets.reshape((1,64,64,64)))
                 loss.backward()
                 optim.step()
 
