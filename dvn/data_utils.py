@@ -16,14 +16,23 @@ class SyntheticData(data.Dataset):
     derived from pytorch's Dataset class.
     """
 
-    def __init__(self, root_path, patch_size=32, patch_num=5):
+    def __init__(self, root_path, patch_size=64):
         self.root_dir_name = os.path.dirname(root_path)
         self.raw_dir_name = os.path.join(self.root_dir_name, "raw/")
         self.seg_dir_name = os.path.join(self.root_dir_name, "seg/")
 
+        # Finding first and last file names in directory
+        file_names = os.listdir(self.raw_dir_name)
+        file_names.sort(key=lambda name: int(name.replace(".nii.gz", "")))
+        
+        first = file_names[0]
+        self.first_file_num = int(first.replace(".nii.gz", ""))
+        
+        last = file_names[-1]
+        self.last_file_num = int(last.replace(".nii.gz", ""))
+
         # Sets the patch size, and which patch to select
         self.patch_size = patch_size
-        self.patch_num = patch_num
 
     def __getitem__(self, index):
         if torch.is_tensor(index):
@@ -34,9 +43,11 @@ class SyntheticData(data.Dataset):
         elif isinstance(index, int):
             if index < 0:
                 index += len(self)
-            if index == 0:
-                index += 1
-            if index < 0 or index >= len(self):
+            if index < self.first_file_num:
+                index += self.first_file_num
+            if index > self.last_file_num:
+                index -= self.last_file_num
+            if index < self.first_file_num or index > self.last_file_num:
                 raise IndexError("The index (%d) is out of range." % index)
             # get the data from direct index
             return self.get_item_from_index(index)
@@ -45,8 +56,7 @@ class SyntheticData(data.Dataset):
             raise TypeError("Invalid argument type.")
 
     def __len__(self):
-        _, _, files = next(os.walk(self.raw_dir_name))
-        return len(files)
+        return self.last_file_num - self.first_file_num + 1
 
     def get_item_from_index(self, index):
         raw_img_name = os.path.join(self.raw_dir_name, ("%d.nii.gz" % index))
@@ -66,7 +76,7 @@ class SyntheticData(data.Dataset):
             unfold(1, self.patch_size, self.patch_size). \
             unfold(0, self.patch_size, self.patch_size)
         raw_patch = raw_patch.contiguous(). \
-            view(-1, self.patch_size, self.patch_size, self.patch_size)
+            view(-1, 1, self.patch_size, self.patch_size, self.patch_size)
 
         seg_patch = torch.from_numpy(seg_data). \
             unfold(2, self.patch_size, self.patch_size). \
@@ -74,7 +84,9 @@ class SyntheticData(data.Dataset):
             unfold(0, self.patch_size, self.patch_size)
         seg_patch = seg_patch.contiguous(). \
             view(-1, self.patch_size, self.patch_size, self.patch_size)
+        
+        # Random number to select patch number
+        patch_num = np.random.randint(self.first_file_num, self.last_file_num)
 
         # Randomly return one patch?
-        return raw_patch[self.patch_num].reshape((1, self.patch_size, self.patch_size, self.patch_size)), \
-               seg_patch[self.patch_num].reshape((1, self.patch_size, self.patch_size, self.patch_size))
+        return raw_patch[patch_num], seg_patch[patch_num]
