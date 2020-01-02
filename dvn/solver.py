@@ -48,8 +48,8 @@ class Solver(object):
         optim = self.optim(model.parameters(), **self.optim_args)
         self._reset_histories()
         iter_per_epoch = len(train_loader)
-        # device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-        device = torch.device("cpu")
+        device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+        # device = torch.device("cpu")
         model.to(device)
 
         print("START TRAIN")
@@ -89,7 +89,7 @@ class Solver(object):
                 inputs, targets = inputs.to(device, dtype=torch.float), targets.to(device, dtype=torch.long)
                 outputs = model.forward(inputs)
                 loss = self.loss_func(outputs, targets)
-                val_losses.append(loss.detach().numpy())
+                val_losses.append(loss.detach().cpu().numpy())
 
                 _, preds = torch.max(outputs, 1)
                 scores = np.mean((preds == targets).detach().cpu().numpy())

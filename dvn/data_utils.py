@@ -21,6 +21,9 @@ class SyntheticData(data.Dataset):
         self.raw_dir_name = os.path.join(self.root_dir_name, "raw/")
         self.seg_dir_name = os.path.join(self.root_dir_name, "seg/")
 
+        # Sets the patch size, and which patch to select
+        self.patch_size = patch_size
+        
         # Finding first and last file names in directory
         file_names = os.listdir(self.raw_dir_name)
         file_names.sort(key=lambda name: int(name.replace(".nii.gz", "")))
@@ -30,9 +33,6 @@ class SyntheticData(data.Dataset):
         
         last = file_names[-1]
         self.last_file_num = int(last.replace(".nii.gz", ""))
-
-        # Sets the patch size, and which patch to select
-        self.patch_size = patch_size
 
     def __getitem__(self, index):
         if torch.is_tensor(index):
@@ -49,6 +49,7 @@ class SyntheticData(data.Dataset):
                 index -= self.last_file_num
             if index < self.first_file_num or index > self.last_file_num:
                 raise IndexError("The index (%d) is out of range." % index)
+            
             # get the data from direct index
             return self.get_item_from_index(index)
 

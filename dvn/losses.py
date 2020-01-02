@@ -14,21 +14,19 @@ def categorical_crossentropy():
     return loss
 
 
-def weighted_categorical_crossentropy(classes=2):
-    def loss(inputs, targets):
-        L1 = nn.CrossEntropyLoss(reduction='none')
-        L = L1(inputs, targets)
-        print(targets.shape)
-        _, y_true_p = torch.max(targets)
-        for c in range(classes):
-            # element-wise equality
-            c_true = torch.eq(y_true_p, c).type(inputs)
-            w = 1. / (torch.sum(c_true))
-            C = torch.sum(L * c_true * w) if c==0 else C+torch.sum(L * c_true *w)
+def weighted_categorical_crossentropy(outputs, targets, classes=2):
+    L1 = nn.CrossEntropyLoss(reduction='none')
+    L = L1(outputs, targets)
+    print(targets.shape)
+    _, y_true_p = torch.max(targets)
+    print(targets.shape)
+    print(y_true_p.shape)
+    for c in range(classes):
+        c_true = torch.eq(y_true_p, c).type(inputs)
+        w = 1. / (torch.sum(c_true))
+        C = torch.sum(L * c_true * w) if c==0 else C+torch.sum(L * c_true *w)
 
-        return C
-
-    return loss
+    return L
 
 
 def weighted_categorical_crossentropy_fpr(classes=2, threshold=0.5):
