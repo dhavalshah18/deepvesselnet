@@ -46,7 +46,7 @@ class DeepVesselNetFCN(nn.Module):
 
         # Softmax layer
         # DON'T KNOW WHAT DIM SHOULD BE
-        self.softmax = nn.Softmax(dim=2)
+        self.softmax = nn.Softmax(dim=1)
 
     def forward(self, x):
 

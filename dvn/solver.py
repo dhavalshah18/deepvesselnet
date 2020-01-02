@@ -86,7 +86,7 @@ class Solver(object):
             val_scores = []
             model.eval()
             for inputs, targets in val_loader:
-                inputs, targets = inputs.to(device), targets.to(device)
+                inputs, targets = inputs.to(device, dtype=torch.float), targets.to(device, dtype=torch.long)
                 outputs = model.forward(inputs)
                 loss = self.loss_func(outputs, targets)
                 val_losses.append(loss.detach().numpy())

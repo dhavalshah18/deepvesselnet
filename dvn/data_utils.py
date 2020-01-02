@@ -86,7 +86,7 @@ class SyntheticData(data.Dataset):
             view(-1, self.patch_size, self.patch_size, self.patch_size)
         
         # Random number to select patch number
-        patch_num = np.random.randint(self.first_file_num, self.last_file_num)
+        patch_num = np.random.randint(raw_patch.shape[0])
 
-        # Randomly return one patch?
+        # Randomly return one patch
         return raw_patch[patch_num], seg_patch[patch_num]
