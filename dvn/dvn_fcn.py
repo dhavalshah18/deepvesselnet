@@ -7,20 +7,20 @@ import math
 
 class DeepVesselNetFCN(nn.Module):
     """INPUT - 3DCONV - 3DCONV - 3DCONV - 3DCONV - FCN """
-    def __init__(self, nchannels=1, nlabels=2, cross_hair=False, dim=3):
+    def __init__(self, nchannels=1, nlabels=2, dim=3):
         """
         Builds the network structure with the provided parameters
 
         Input:
         - nchannels (int): number of input channels to the network
         - nlabels (int): number of labels to be predicted
-        - cross_hair (boolean): whether to use cross hair filters or classical convolution filters
         - dim (int): dimension of the network
         """
         super().__init__()
 
         self.nchannels = nchannels
         self.nlabels = nlabels
+        self.dims = dim
         
         # 3D Convolutional layers
         self.conv1 = nn.Conv3d(in_channels=self.nchannels, out_channels=5, kernel_size=3, padding=1)

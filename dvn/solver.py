@@ -16,7 +16,7 @@ class Solver(object):
                         "weight_decay": 0.01}
 
     def __init__(self, optim=torch.optim.SGD, optim_args={},
-                 loss_func=torch.nn.CrossEntropyLoss()):
+                 loss_func=ls.Dice_Loss()):
         optim_args_merged = self.default_sgd_args.copy()
         optim_args_merged.update(optim_args)
         self.optim_args = optim_args_merged
