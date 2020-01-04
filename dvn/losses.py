@@ -20,8 +20,9 @@ class Dice_Loss(nn.Module):
         numerator = 2. * torch.sum(pred * targets)
         denominator = torch.sum(pred + targets)
         
-        loss = Variable((1. - (numerator + 1)/(denominator + 1)), requires_grad=True)
-        
+        # loss = Variable((1. - (numerator + 1)/(denominator + 1)), requires_grad=True)
+        loss = Variable((1. - (numerator/denominator)), requires_grad=True)
+
         return loss
         
         

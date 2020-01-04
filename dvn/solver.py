@@ -12,12 +12,12 @@ from dvn import misc as ms
 
 
 class Solver(object):
-    default_sgd_args = {"lr": 0.01,
-                        "weight_decay": 0.01}
+    default_optim_args = {"lr": 0.01,
+                        "weight_decay": 0.}
 
     def __init__(self, optim=torch.optim.SGD, optim_args={},
                  loss_func=ls.Dice_Loss()):
-        optim_args_merged = self.default_sgd_args.copy()
+        optim_args_merged = self.default_optim_args.copy()
         optim_args_merged.update(optim_args)
         self.optim_args = optim_args_merged
         self.optim = optim
@@ -57,7 +57,7 @@ class Solver(object):
         for epoch in range(num_epochs):
             # Training
             for i, (inputs, targets) in enumerate(train_loader, 1):
-                inputs, targets = inputs.to(device, dtype=torch.float), targets.to(device, dtype=torch.long)
+                inputs, targets = inputs.to(device, dtype=torch.float), targets.to(device, dtype=torch.float)
                 optim.zero_grad()
 
                 outputs = model(inputs)
@@ -84,10 +84,10 @@ class Solver(object):
             # Validation
             val_losses = []
             val_scores = []
-            model.eval()
+            # model.eval()
             for inputs, targets in val_loader:
-                inputs, targets = inputs.to(device, dtype=torch.float), targets.to(device, dtype=torch.long)
-                outputs = model.forward(inputs)
+                inputs, targets = inputs.to(device, dtype=torch.float), targets.to(device, dtype=torch.float)
+                outputs = model(inputs)
                 loss = self.loss_func(outputs, targets)
                 val_losses.append(loss.detach().cpu().numpy())
 
@@ -95,7 +95,7 @@ class Solver(object):
                 scores = np.mean((preds == targets).detach().cpu().numpy())
                 val_scores.append(scores)
 
-            model.train()
+            # model.train()
             val_acc, val_loss = np.mean(val_scores), np.mean(val_losses)
             if log_nth:
                 print('[Epoch %d/%d] VAL   acc/loss: %.3f/%.3f' % (epoch + 1,
