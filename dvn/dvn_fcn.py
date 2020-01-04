@@ -47,7 +47,10 @@ class DeepVesselNetFCN(nn.Module):
                 upper = 1/math.sqrt(m.kernel_size[0]*m.kernel_size[1]*m.kernel_size[2])
                 # Uniformly initialize with upper and lower bounds
                 m.weight = nn.init.uniform_(m.weight, a=lower, b=upper)
-
+        
+        for param in self.parameters():
+            param.requires_grad = True
+            
     def forward(self, x):
 
         x = self.relu(self.conv1(x))

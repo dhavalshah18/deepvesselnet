@@ -32,6 +32,8 @@ class Solver(object):
         self.train_acc_history = []
         self.val_acc_history = []
         self.val_loss_history = []
+        self.train_dice_coeff_history = []
+        self.val_dice_coeff_history = []
 
     def train(self, model, train_loader, val_loader, num_epochs=10, log_nth=0):
         """
@@ -51,7 +53,8 @@ class Solver(object):
         device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
         # device = torch.device("cpu")
         model.to(device)
-
+        model.train()
+        
         print("START TRAIN")
 
         for epoch in range(num_epochs):
@@ -63,6 +66,7 @@ class Solver(object):
                 outputs = model(inputs)
                 loss = self.loss_func(outputs, targets)
                 loss.backward()
+                ms.plot_grad_flow(model.named_parameters())
                 optim.step()
 
                 self.train_loss_history.append(loss.detach().cpu().numpy())
@@ -76,17 +80,19 @@ class Solver(object):
 
             _, preds = torch.max(outputs, 1)
             train_acc = np.mean((preds == targets).detach().cpu().numpy())
+            dice_coeff = ms.dice_coeff(outputs, targets).detach().cpu().numpy()
             self.train_acc_history.append(train_acc)
+            self.train_dice_coeff_history.append(dice_coeff)
             if log_nth:
-                print('[Epoch %d/%d] TRAIN acc/loss: %.3f/%.3f' %
-                      (epoch + 1, num_epochs, train_acc, train_loss))
+                print('[Epoch %d/%d] TRAIN acc/loss/dice: %.3f/%.3f/%.3f' %
+                      (epoch + 1, num_epochs, train_acc, train_loss, dice_coeff))
 
             # Validation
             val_losses = []
             val_scores = []
-            # model.eval()
+            model.eval()
             for inputs, targets in val_loader:
-                inputs, targets = inputs.to(device, dtype=torch.float), targets.to(device, dtype=torch.float)
+                inputs, targets = inputs.to(device, dtype=torch.float), targets.to(device)
                 outputs = model(inputs)
                 loss = self.loss_func(outputs, targets)
                 val_losses.append(loss.detach().cpu().numpy())
@@ -94,14 +100,17 @@ class Solver(object):
                 _, preds = torch.max(outputs, 1)
                 scores = np.mean((preds == targets).detach().cpu().numpy())
                 val_scores.append(scores)
+                
 
-            # model.train()
+            model.train()
+            dice_coeff = ms.dice_coeff(outputs, targets).detach().cpu().numpy()
+            self.val_dice_coeff_history.append(dice_coeff)
             val_acc, val_loss = np.mean(val_scores), np.mean(val_losses)
             if log_nth:
-                print('[Epoch %d/%d] VAL   acc/loss: %.3f/%.3f' % (epoch + 1,
+                print('[Epoch %d/%d] VAL   acc/loss/dice: %.3f/%.3f/%.3f' % (epoch + 1,
                                                                    num_epochs,
                                                                    val_acc,
-                                                                   val_loss))
+                                                                   val_loss, dice_coeff))
 
         #################################################################
 
