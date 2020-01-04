@@ -16,7 +16,7 @@ class Solver(object):
                         "weight_decay": 0.}
 
     def __init__(self, optim=torch.optim.SGD, optim_args={},
-                 loss_func=ls.Dice_Loss()):
+                 loss_func=ls.Soft_Dice_Loss()):
         optim_args_merged = self.default_optim_args.copy()
         optim_args_merged.update(optim_args)
         self.optim_args = optim_args_merged
@@ -57,7 +57,7 @@ class Solver(object):
         for epoch in range(num_epochs):
             # Training
             for i, (inputs, targets) in enumerate(train_loader, 1):
-                inputs, targets = inputs.to(device, dtype=torch.float), targets.to(device, dtype=torch.float)
+                inputs, targets = inputs.to(device, dtype=torch.float), targets.to(device)
                 optim.zero_grad()
 
                 outputs = model(inputs)

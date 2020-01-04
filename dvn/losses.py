@@ -6,22 +6,24 @@ import torch.nn as nn
 import torch.optim as optim
 from torch.autograd import Variable
 import numpy as np
+from dvn import misc as ms
 
-class Dice_Loss(nn.Module):
+class Soft_Dice_Loss(nn.Module):
     def __init__(self):
         super().__init__()
         
-    def forward(self, outputs, targets):
+    def forward(self, outputs, targets, smooth=1e-6):
         _, pred = torch.max(outputs, 1)
         
-        pred = pred.contiguous().view(-1)
-        targets = targets.contiguous().view(-1)
+        # Change to one hot encoding
+        # Shape N x X x Y x Z x C (classes)
+        pred = torch.as_tensor(ms.to_one_hot(pred.detach().cpu().numpy(), cls=2))
+        targets = torch.as_tensor(ms.to_one_hot(targets.detach().cpu().numpy(), cls=2))
         
-        numerator = 2. * torch.sum(pred * targets)
-        denominator = torch.sum(pred + targets)
-        
-        # loss = Variable((1. - (numerator + 1)/(denominator + 1)), requires_grad=True)
-        loss = Variable((1. - (numerator/denominator)), requires_grad=True)
+        numerator = 2. * torch.sum(targets * pred, dim=[1, 2, 3])
+        denominator = torch.sum(targets**2 + pred**2, dim=[1, 2, 3])
+
+        loss = Variable((1. - torch.mean(numerator/denominator)), requires_grad=True)
 
         return loss
         

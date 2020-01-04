@@ -62,7 +62,7 @@ class SyntheticData(data.Dataset):
     def get_item_from_index(self, index):
         raw_img_name = os.path.join(self.raw_dir_name, ("%d.nii.gz" % index))
         seg_img_name = os.path.join(self.seg_dir_name, ("%d.nii.gz" % index))
-
+        
         # Load proxy so image not loaded into memory
         raw_proxy = nib.load(raw_img_name)
         seg_proxy = nib.load(seg_img_name)
