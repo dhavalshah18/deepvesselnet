@@ -75,3 +75,14 @@ class DeepVesselNetFCN(nn.Module):
         x = self.sigmoid(self.fcn1(x))
         x = self.softmax(x)
         return x
+    
+    def save(self, path):
+        """
+        Save model with its parameters to the given path. Conventionally the
+        path should end with "*.model".
+
+        Inputs:
+        - path: path string
+        """
+        print('Saving model... %s' % path)
+        torch.save(self, path)
