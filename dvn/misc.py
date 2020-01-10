@@ -1,28 +1,23 @@
 import numpy as np
 import torch
+from torch.nn import functional as F
 from matplotlib.lines import Line2D
-
-def to_one_hot(data, cls=None):
-    if cls is None:
-        cls = len(np.unique(data))
-    sh = data.shape
-    hot = np.zeros((np.prod(sh), cls), dtype=data.dtype)
-    hot[np.arange(np.prod(sh)), data.flatten()] = 1
-    return np.reshape(hot, sh + (cls, ))
+from torch.autograd import Variable
 
 def dice_coeff(outputs, targets, smooth=1):
     _, pred = torch.max(outputs, 1)
 
-    pred = torch.as_tensor(to_one_hot(pred.detach().cpu().numpy(), cls=2))
-    targets = torch.as_tensor(to_one_hot(targets.detach().cpu().numpy(), cls=2))
+    pred = F.one_hot(pred.long(), num_classes=2)
+    targets = F.one_hot(targets.long(), num_classes=2)
     
     dim = tuple(range(1, len(pred.shape)-1))
-    intersection = torch.sum(targets * pred, dim=dim)
-    union = torch.sum(targets, dim=dim) + torch.sum(pred, dim=dim)
+    intersection = torch.sum(targets * pred, dim=dim, dtype=torch.float)
+    union = torch.sum(targets, dim=dim, dtype=torch.float) + torch.sum(pred, dim=dim, dtype=torch.float)
     
-    dice = torch.mean((2. * intersection + smooth)/(union + smooth))
+    dice = torch.mean((2. * intersection + smooth)/(union + smooth), dtype=torch.float)
         
     return dice
+
 
 def plot_grad_flow(named_parameters):
     '''Plots the gradients flowing through different layers in the net during training.
@@ -33,12 +28,14 @@ def plot_grad_flow(named_parameters):
     ave_grads = []
     max_grads= []
     layers = []
+    
     for n, p in named_parameters:
         if(p.requires_grad) and ("bias" not in n):
             layers.append(n)
             print(p.grad)
             ave_grads.append(p.grad.abs().mean())
             max_grads.append(p.grad.abs().max())
+    
     plt.bar(np.arange(len(max_grads)), max_grads, alpha=0.1, lw=1, color="c")
     plt.bar(np.arange(len(max_grads)), ave_grads, alpha=0.1, lw=1, color="b")
     plt.hlines(0, 0, len(ave_grads)+1, lw=2, color="k" )

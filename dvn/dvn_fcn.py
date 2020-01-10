@@ -31,8 +31,19 @@ class DeepVesselNetFCN(nn.Module):
         # Fully Convolutional layer
         self.fcn1 = nn.Conv3d(in_channels=50, out_channels=self.nlabels, kernel_size=1)
         
+        # Batch Normalisation
+        self.batchnorm1 = nn.BatchNorm3d(5)
+        self.batchnorm2 = nn.BatchNorm3d(10)
+        self.batchnorm3 = nn.BatchNorm3d(20)
+        self.batchnorm4 = nn.BatchNorm3d(50)
+        
+        # Dropout
+        self.dropout1 = nn.Dropout(p=0.1)
+        self.dropout2 = nn.Dropout(p=0.2)
+        self.dropout3 = nn.Dropout(p=0.3)
+        self.dropout4 = nn.Dropout(p=0.4)
+        
         # Softmax layer
-        # DON'T KNOW WHAT DIM SHOULD BE
         self.softmax = nn.Softmax(dim=1)
         
         # Non-linearities
@@ -54,9 +65,13 @@ class DeepVesselNetFCN(nn.Module):
     def forward(self, x):
 
         x = self.relu(self.conv1(x))
+        x = self.batchnorm1(x)
         x = self.relu(self.conv2(x))
+        x = self.batchnorm2(x)
         x = self.relu(self.conv3(x))
+        x = self.batchnorm3(x)
         x = self.relu(self.conv4(x))
+        # x = self.batchnorm4(x)
         x = self.sigmoid(self.fcn1(x))
         x = self.softmax(x)
         return x

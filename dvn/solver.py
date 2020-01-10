@@ -16,7 +16,8 @@ class Solver(object):
                         "weight_decay": 0.}
 
     def __init__(self, optim=torch.optim.SGD, optim_args={},
-                 loss_func=ls.Soft_Dice_Loss()):
+                 loss_func=ls.dice_loss):
+        
         optim_args_merged = self.default_optim_args.copy()
         optim_args_merged.update(optim_args)
         self.optim_args = optim_args_merged
@@ -60,13 +61,16 @@ class Solver(object):
         for epoch in range(num_epochs):
             # Training
             for i, (inputs, targets) in enumerate(train_loader, 1):
-                inputs, targets = inputs.to(device, dtype=torch.float), targets.to(device)
+                inputs, targets = inputs.to(device, dtype=torch.float), targets.to(device, dtype=torch.long)
                 optim.zero_grad()
 
                 outputs = model(inputs)
                 loss = self.loss_func(outputs, targets)
                 loss.backward()
-                ms.plot_grad_flow(model.named_parameters())
+#                 print(torch.mean(model.conv1.weight.grad))
+#                 print(torch.mean(model.conv2.weight.grad))
+#                 print(torch.mean(model.conv3.weight.grad))
+#                 print(torch.mean(model.conv4.weight.grad))
                 optim.step()
 
                 self.train_loss_history.append(loss.detach().cpu().numpy())
@@ -92,7 +96,7 @@ class Solver(object):
             val_scores = []
             model.eval()
             for inputs, targets in val_loader:
-                inputs, targets = inputs.to(device, dtype=torch.float), targets.to(device)
+                inputs, targets = inputs.to(device, dtype=torch.float), targets.to(device, dtype=torch.long)
                 outputs = model(inputs)
                 loss = self.loss_func(outputs, targets)
                 val_losses.append(loss.detach().cpu().numpy())
@@ -101,8 +105,6 @@ class Solver(object):
                 scores = np.mean((preds == targets).detach().cpu().numpy())
                 val_scores.append(scores)
                 
-
-            model.train()
             dice_coeff = ms.dice_coeff(outputs, targets).detach().cpu().numpy()
             self.val_dice_coeff_history.append(dice_coeff)
             val_acc, val_loss = np.mean(val_scores), np.mean(val_losses)
@@ -111,6 +113,8 @@ class Solver(object):
                                                                    num_epochs,
                                                                    val_acc,
                                                                    val_loss, dice_coeff))
+
+            model.train()
 
         #################################################################
 
