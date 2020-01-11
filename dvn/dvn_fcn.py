@@ -7,7 +7,7 @@ import math
 
 class DeepVesselNetFCN(nn.Module):
     """INPUT - 3DCONV - 3DCONV - 3DCONV - 3DCONV - FCN """
-    def __init__(self, nchannels=1, nlabels=2, dim=3):
+    def __init__(self, nchannels=1, nlabels=2, dim=3, batchnorm=True, dropout=False):
         """
         Builds the network structure with the provided parameters
 
@@ -21,6 +21,8 @@ class DeepVesselNetFCN(nn.Module):
         self.nchannels = nchannels
         self.nlabels = nlabels
         self.dims = dim
+        self.batchnorm = batchnorm
+        self.dropout = dropout
         
         # 3D Convolutional layers
         self.conv1 = nn.Conv3d(in_channels=self.nchannels, out_channels=5, kernel_size=3, padding=1)
@@ -63,16 +65,39 @@ class DeepVesselNetFCN(nn.Module):
             param.requires_grad = True
             
     def forward(self, x):
-
-        x = self.relu(self.conv1(x))
-        x = self.batchnorm1(x)
-        x = self.relu(self.conv2(x))
-        x = self.batchnorm2(x)
-        x = self.relu(self.conv3(x))
-        x = self.batchnorm3(x)
-        x = self.relu(self.conv4(x))
-        # x = self.batchnorm4(x)
-        x = self.sigmoid(self.fcn1(x))
+        
+        # 1st layer
+        x = self.conv1(x)
+        if self.batchnorm:
+            x = self.batchnorm1(x)
+        x = self.relu(x)
+        if self.dropout:
+            x = self.dropout1(x)
+        
+        # 2nd layer
+        x = self.conv2(x)
+        if self.batchnorm:
+            x = self.batchnorm2(x)
+        x = self.relu(x)
+        if self.dropout:
+            x = self.dropout2(x)
+        
+        # 3rd layer
+        x = self.conv3(x)
+        if self.batchnorm:
+            x = self.batchnorm3(x)
+        x = self.relu(x)
+        if self.dropout:
+            x = self.dropout3(x)
+        
+        x = self.conv4(x)
+#         x = self.batchnorm4(x)
+        x = self.relu(x)
+#         x = self.dropout4(x)
+        
+        x = self.fcn1(x)
+        x = self.sigmoid(x)
+        
         x = self.softmax(x)
         return x
     

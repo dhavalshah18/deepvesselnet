@@ -52,6 +52,10 @@ class Solver(object):
         self._reset_histories()
         iter_per_epoch = len(train_loader)
         device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+        self.best_train_dice = -1
+        self.best_val_dice = -1
+        self.best_train_model = None
+        self.best_val_model = None
         # device = torch.device("cpu")
         model.to(device)
         model.train()
@@ -67,10 +71,6 @@ class Solver(object):
                 outputs = model(inputs)
                 loss = self.loss_func(outputs, targets)
                 loss.backward()
-#                 print(torch.mean(model.conv1.weight.grad))
-#                 print(torch.mean(model.conv2.weight.grad))
-#                 print(torch.mean(model.conv3.weight.grad))
-#                 print(torch.mean(model.conv4.weight.grad))
                 optim.step()
 
                 self.train_loss_history.append(loss.detach().cpu().numpy())
@@ -85,8 +85,13 @@ class Solver(object):
             _, preds = torch.max(outputs, 1)
             train_acc = np.mean((preds == targets).detach().cpu().numpy())
             dice_coeff = ms.dice_coeff(outputs, targets).detach().cpu().numpy()
+            if dice_coeff > self.best_train_dice:
+                self.best_train_dice = dice_coeff
+                self.best_train_model = model
+            
             self.train_acc_history.append(train_acc)
             self.train_dice_coeff_history.append(dice_coeff)
+            
             if log_nth:
                 print('[Epoch %d/%d] TRAIN acc/loss/dice: %.3f/%.3f/%.3f' %
                       (epoch + 1, num_epochs, train_acc, train_loss, dice_coeff))
@@ -106,6 +111,10 @@ class Solver(object):
                 val_scores.append(scores)
                 
             dice_coeff = ms.dice_coeff(outputs, targets).detach().cpu().numpy()
+            if dice_coeff > self.best_val_dice:
+                self.best_val_dice = dice_coeff
+                self.best_val_model = model
+            
             self.val_dice_coeff_history.append(dice_coeff)
             val_acc, val_loss = np.mean(val_scores), np.mean(val_losses)
             if log_nth:
