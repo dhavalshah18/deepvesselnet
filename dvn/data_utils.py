@@ -1,13 +1,11 @@
 import os
-import matplotlib as plt
 import numpy as np
 import torch
 import torch.utils.data as data
 from torchvision import transforms
 import nibabel as nib
-import random
 
-import _pickle as pickle
+from dvn import patchify_unpatchify as pu
 
 
 class SyntheticData(data.Dataset):
@@ -140,11 +138,11 @@ class MRAData(data.Dataset):
         # Get dataobj of proxy
         raw_data = np.asarray(raw_proxy.dataobj).astype(np.int32)
         seg_data = np.asarray(seg_proxy.dataobj).astype(np.int32)
-        
+
         raw_image = torch.from_numpy(raw_data).unsqueeze(0)
-        seg_image = torch.from_numpy(seg_data)
-        
+        raw_image = pu.patchify(raw_image, (1, 64, 64, 64), (64, 64, 64))
+        seg_image = torch.from_numpy(seg_data).unsqueeze(0)
+        seg_image = pu.patchify(seg_image, (1, 64, 64, 64), (64, 64, 64)).squeeze(3)
         return raw_image, seg_image
     
-    
-    
+

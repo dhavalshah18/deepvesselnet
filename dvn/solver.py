@@ -2,11 +2,10 @@
 
 
 import numpy as np
-
 import torch
 import torch.nn
 import torch.optim
-from torch.autograd import Variable
+
 from dvn import losses as ls
 from dvn import misc as ms
 
