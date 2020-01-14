@@ -129,20 +129,20 @@ class MRAData(data.Dataset):
     def get_item_from_index(self, index):
         name = self.file_names[index]
         raw_img_name = os.path.join(self.raw_dir_name, name)
-        seg_img_name = os.path.join(self.seg_dir_name, name)
+        # seg_img_name = os.path.join(self.seg_dir_name, name)
         
         # Load proxy so image not loaded into memory
         raw_proxy = nib.load(raw_img_name)
-        seg_proxy = nib.load(seg_img_name)
+        # seg_proxy = nib.load(seg_img_name)
 
         # Get dataobj of proxy
         raw_data = np.asarray(raw_proxy.dataobj).astype(np.int32)
-        seg_data = np.asarray(seg_proxy.dataobj).astype(np.int32)
+        # seg_data = np.asarray(seg_proxy.dataobj).astype(np.int32)
 
         raw_image = torch.from_numpy(raw_data).unsqueeze(0)
-        raw_image = pu.patchify(raw_image, (1, 64, 64, 64), (64, 64, 64))
-        seg_image = torch.from_numpy(seg_data).unsqueeze(0)
-        seg_image = pu.patchify(seg_image, (1, 64, 64, 64), (64, 64, 64)).squeeze(3)
-        return raw_image, seg_image
+        # raw_image = pu.patchify(raw_image, (1, 64, 64, 64), (64, 64, 64))
+        # seg_image = torch.from_numpy(seg_data).unsqueeze(0)
+        # seg_image = pu.patchify(seg_image, (1, 64, 64, 64), (64, 64, 64)).squeeze(3)
+        return raw_image
     
 
