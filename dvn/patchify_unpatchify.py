@@ -64,7 +64,7 @@ def unpatchify(patches, step, imsize, scale_factor):
 
     volume = torch.zeros((c, v_h, v_w, v_d), dtype=patches.dtype)
     divisor = torch.zeros((c, v_h, v_w, v_d), dtype=patches.dtype)
-    print(volume.shape, imsize)
+#     print(volume.shape, imsize)
 
     for i, j, k in product(range(n_h), range(n_w), range(n_d)):
         patch = patches[i, j, k]
