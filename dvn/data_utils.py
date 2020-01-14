@@ -2,10 +2,11 @@ import os
 import numpy as np
 import torch
 import torch.utils.data as data
-from torchvision import transforms
+# from torchvision import transforms
 import nibabel as nib
 
 from dvn import patchify_unpatchify as pu
+from dvn import transforms
 
 
 class SyntheticData(data.Dataset):
@@ -97,10 +98,11 @@ class MRAData(data.Dataset):
     derived from pytorch's Dataset class.
     """
     
-    def __init__(self, root_path):
+    def __init__(self, root_path, transform=None):
         self.root_dir_name = os.path.dirname(root_path)
         self.raw_dir_name = os.path.join(self.root_dir_name, "raw/")
         self.seg_dir_name = os.path.join(self.root_dir_name, "seg/")
+        self.transform = transform
         
         self.file_names = os.listdir(self.raw_dir_name)
         
@@ -129,20 +131,25 @@ class MRAData(data.Dataset):
     def get_item_from_index(self, index):
         name = self.file_names[index]
         raw_img_name = os.path.join(self.raw_dir_name, name)
-        # seg_img_name = os.path.join(self.seg_dir_name, name)
+        seg_img_name = os.path.join(self.seg_dir_name, name)
         
         # Load proxy so image not loaded into memory
         raw_proxy = nib.load(raw_img_name)
-        # seg_proxy = nib.load(seg_img_name)
+        seg_proxy = nib.load(seg_img_name)
 
         # Get dataobj of proxy
         raw_data = np.asarray(raw_proxy.dataobj).astype(np.int32)
-        # seg_data = np.asarray(seg_proxy.dataobj).astype(np.int32)
+        seg_data = np.asarray(seg_proxy.dataobj).astype(np.int32)
 
         raw_image = torch.from_numpy(raw_data).unsqueeze(0)
         # raw_image = pu.patchify(raw_image, (1, 64, 64, 64), (64, 64, 64))
-        # seg_image = torch.from_numpy(seg_data).unsqueeze(0)
+        seg_image = torch.from_numpy(seg_data).unsqueeze(0)
         # seg_image = pu.patchify(seg_image, (1, 64, 64, 64), (64, 64, 64)).squeeze(3)
-        return raw_image
+        
+        
+        normalize = transforms.Normalize(torch.max(raw_image), torch.min(raw_image), 1., 255.)
+        raw_image = normalize(raw_image)
+        
+        return raw_image, seg_image
     
-
+    
