@@ -5,6 +5,7 @@ import numpy as np
 import torch
 import torch.nn
 import torch.optim
+from torch.utils.tensorboard import SummaryWriter
 
 from dvn import losses as ls
 from dvn import misc as ms
@@ -22,8 +23,13 @@ class Solver(object):
         self.optim_args = optim_args_merged
         self.optim = optim
         self.loss_func = loss_func
+        self.best_train_dice = -1
+        self.best_val_dice = -1
+        self.best_train_model = None
+        self.best_val_model = None
 
         self._reset_histories()
+        self.writer = SummaryWriter()
 
     def _reset_histories(self):
         """Resets train and val histories for the accuracy and the loss. """
@@ -51,10 +57,6 @@ class Solver(object):
         self._reset_histories()
         iter_per_epoch = len(train_loader)
         device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-        self.best_train_dice = -1
-        self.best_val_dice = -1
-        self.best_train_model = None
-        self.best_val_model = None
         # device = torch.device("cpu")
         model.to(device)
         model.train()
@@ -71,23 +73,23 @@ class Solver(object):
                 loss = self.loss_func(outputs, targets)
                 loss.backward()
                 optim.step()
-
+                
+                dice_coeff = ms.dice_coeff(outputs, targets).detach().cpu().numpy()
                 self.train_loss_history.append(loss.detach().cpu().numpy())
                 if log_nth and i % log_nth == 0:
                     last_log_nth_losses = self.train_loss_history[-log_nth:]
+                    dice_coeff = ms.dice_coeff(outputs, targets).detach().cpu().numpy()
                     train_loss = np.mean(last_log_nth_losses)
                     print('[Iteration %d/%d] TRAIN loss: %.3f' %
                           (i + epoch * iter_per_epoch,
                            iter_per_epoch * num_epochs,
                            train_loss))
+                    self.writer.add_scalar("Soft dice loss", train_loss, i + epoch * iter_per_epoch)
+                    self.writer.add_scalar("Dice coefficient", dice_coeff, i + epoch * iter_per_epoch)
 
             _, preds = torch.max(outputs, 1)
             train_acc = np.mean((preds == targets).detach().cpu().numpy())
             dice_coeff = ms.dice_coeff(outputs, targets).detach().cpu().numpy()
-            if dice_coeff > self.best_train_dice:
-                self.best_train_dice = dice_coeff
-                self.best_train_model = model
-            
             self.train_acc_history.append(train_acc)
             self.train_dice_coeff_history.append(dice_coeff)
             
@@ -109,11 +111,6 @@ class Solver(object):
                 scores = np.mean((preds == targets).detach().cpu().numpy())
                 val_scores.append(scores)
                 
-            dice_coeff = ms.dice_coeff(outputs, targets).detach().cpu().numpy()
-            if dice_coeff > self.best_val_dice:
-                self.best_val_dice = dice_coeff
-                self.best_val_model = model
-            
             self.val_dice_coeff_history.append(dice_coeff)
             val_acc, val_loss = np.mean(val_scores), np.mean(val_losses)
             if log_nth:

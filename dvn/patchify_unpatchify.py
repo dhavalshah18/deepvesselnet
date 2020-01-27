@@ -69,6 +69,6 @@ def unpatchify(patches, step, imsize, scale_factor):
     for i, j, k in product(range(n_h), range(n_w), range(n_d)):
         patch = patches[i, j, k]
         volume[:, (i * s_h):(i * s_h) + p_h, (j * s_w):(j * s_w) + p_w, (k * s_d):(k * s_d) + p_d] += patch
-        divisor[:, (i * s_h):(i * s_h) + p_h, (j * s_w):(j * s_w) + p_w, (k * s_d):(k * s_d) + p_d] += 1.
+        divisor[:, (i * s_h):(i * s_h) + p_h, (j * s_w):(j * s_w) + p_w, (k * s_d):(k * s_d) + p_d] += 1
     volume /= divisor
     return volume[:, 0:r_h, 0:r_w, 0:r_d]

@@ -70,30 +70,27 @@ class DeepVesselNetFCN(nn.Module):
         
         # 1st layer
         x = self.conv1(x)
-#         if self.batchnorm:
-#             x = self.batchnorm1(x)
-        x = self.batchnorm1(x)
+        if self.batchnorm:
+            x = self.batchnorm1(x)
         x = self.relu(x)
-#         if self.dropout:
-#             x = self.dropout1(x)
+        if self.dropout:
+            x = self.dropout1(x)
         
         # 2nd layer
         x = self.conv2(x)
-#         if self.batchnorm:
-#             x = self.batchnorm2(x)
-        x = self.batchnorm2(x)
+        if self.batchnorm:
+            x = self.batchnorm2(x)
         x = self.relu(x)
-#         if self.dropout:
-#             x = self.dropout2(x)
+        if self.dropout:
+            x = self.dropout2(x)
         
         # 3rd layer
         x = self.conv3(x)
-#         if self.batchnorm:
-#             x = self.batchnorm3(x)
-        x = self.batchnorm3(x)
+        if self.batchnorm:
+            x = self.batchnorm3(x)
         x = self.relu(x)
-#         if self.dropout:
-#             x = self.dropout3(x)
+        if self.dropout:
+            x = self.dropout3(x)
         
         x = self.conv4(x)
 #         x = self.batchnorm4(x)
