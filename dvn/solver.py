@@ -1,6 +1,5 @@
 """Class to do training of the network."""
 
-
 import numpy as np
 import torch
 import torch.nn
@@ -13,11 +12,11 @@ from dvn import misc as ms
 
 class Solver(object):
     default_optim_args = {"lr": 0.01,
-                        "weight_decay": 0.}
+                          "weight_decay": 0.}
 
     def __init__(self, optim=torch.optim.SGD, optim_args={},
                  loss_func=ls.dice_loss):
-        
+
         optim_args_merged = self.default_optim_args.copy()
         optim_args_merged.update(optim_args)
         self.optim_args = optim_args_merged
@@ -60,7 +59,7 @@ class Solver(object):
         # device = torch.device("cpu")
         model.to(device)
         model.train()
-        
+
         print("START TRAIN")
 
         for epoch in range(num_epochs):
@@ -73,7 +72,7 @@ class Solver(object):
                 loss = self.loss_func(outputs, targets)
                 loss.backward()
                 optim.step()
-                
+
                 dice_coeff = ms.dice_coeff(outputs, targets).detach().cpu().numpy()
                 self.train_loss_history.append(loss.detach().cpu().numpy())
                 if log_nth and i % log_nth == 0:
@@ -92,7 +91,7 @@ class Solver(object):
             dice_coeff = ms.dice_coeff(outputs, targets).detach().cpu().numpy()
             self.train_acc_history.append(train_acc)
             self.train_dice_coeff_history.append(dice_coeff)
-            
+
             if log_nth:
                 print('[Epoch %d/%d] TRAIN acc/loss/dice: %.3f/%.3f/%.3f' %
                       (epoch + 1, num_epochs, train_acc, train_loss, dice_coeff))
@@ -110,14 +109,14 @@ class Solver(object):
                 _, preds = torch.max(outputs, 1)
                 scores = np.mean((preds == targets).detach().cpu().numpy())
                 val_scores.append(scores)
-                
+
             self.val_dice_coeff_history.append(dice_coeff)
             val_acc, val_loss = np.mean(val_scores), np.mean(val_losses)
             if log_nth:
                 print('[Epoch %d/%d] VAL   acc/loss/dice: %.3f/%.3f/%.3f' % (epoch + 1,
-                                                                   num_epochs,
-                                                                   val_acc,
-                                                                   val_loss, dice_coeff))
+                                                                             num_epochs,
+                                                                             val_acc,
+                                                                             val_loss, dice_coeff))
 
             model.train()
 
